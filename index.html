@@ -1,0 +1,273 @@
+<!--  
+
+Copyright 2015 Walter Schulze
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License. 
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Katydid Playground</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script src="https://rawgit.com/michael/github/master/github.js"></script>
+  <script src="https://cdn.rawgit.com/codemirror/CodeMirror/master/lib/codemirror.js"></script>
+  <link rel="stylesheet" href="https://cdn.rawgit.com/codemirror/CodeMirror/master/lib/codemirror.css">
+  <script src="https://cdn.rawgit.com/codemirror/CodeMirror/master/mode/javascript/javascript.js"></script>
+  <script src="http://codemirror.net/addon/mode/simple.js"></script>
+  <script src="main.js"></script>
+
+  <script>
+
+function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}
+
+function validateCode(katydidCodeMirror, jsonCodeMirror) {
+	$('#theoutput').prop("class", "alert alert-info");
+	$('#theoutput').text("compiling...");
+	var katydidcode = katydidCodeMirror.getValue();
+	var jsoncode = jsonCodeMirror.getValue();
+	var validateFunc = gofunctions["Validate"];
+	var res = validateFunc(katydidcode, jsoncode);
+	if (res.indexOf("Error: ") === 0) {
+		res = res.replace("Error: ", "");
+		$('#theoutput').prop("class", "alert alert-danger");
+	} else {
+		if (res == "true") {
+			$('#theoutput').prop("class", "alert alert-success");
+		} else {
+			$('#theoutput').prop("class", "alert alert-warning");
+		}
+	}
+	$('#theoutput').text(res);
+}
+
+function reportError(err) {
+	$('#theoutput').prop("class", "alert alert-danger");
+	$('#theoutput').text(err);
+}
+
+function saveCode(katydidCodeMirror, jsonCodeMirror) {
+	var katydidcode = katydidCodeMirror.getValue();
+	var jsoncode = jsonCodeMirror.getValue();
+	var github = new Github({});
+	var gist = github.getGist();
+	gist.create({
+        "description": "saved katydid src",
+        "public": true,
+        "files": {
+            "katydidsrc": {
+            	"content": katydidcode,
+            },
+            "jsonsrc": {
+            	"content": jsoncode,
+            }
+        }
+    }, function(err, rest) {
+    	if (err == undefined) {
+    		window.location.assign("./index.html?gist="+rest.id+"&share=true");
+    	} else {
+    		reportError(err);
+    	}
+    });
+}
+
+function loadCode(katydidCodeMirror, jsonCodeMirror) {
+	var github = new Github({});
+	var gist = github.getGist(gistText);
+	gist.read(function(err, content) {
+		if (err == undefined) {
+			katydidCodeMirror.setValue(content.files["katydidsrc"].content);
+			jsonCodeMirror.setValue(content.files["jsonsrc"].content);
+		} else {
+			reportError(err);
+		}
+	});
+}
+
+function displayShareBox() {
+	var linkText = window.location.href.replace("&share=true", "");
+	$("#thelink").val(linkText);
+	$("#thelink").prop("hidden", false);
+	var theLinkBox = document.getElementById("thelink");
+    theLinkBox.onfocus = function() {
+        theLinkBox.select();
+
+        // Work around Chrome's little problem
+        theLinkBox.onmouseup = function() {
+            // Prevent further mouseup intervention
+            theLinkBox.onmouseup = null;
+            return false;
+        };
+    };
+    theLinkBox.focus();
+}
+
+CodeMirror.defineSimpleMode("katydidmode", {
+	start: [
+		{regex: /"(?:[^\\]|\\.)*?"/, token: "string"},
+		{regex: /(?:\<emptyset\>|\<empty\>)/,
+     	token: "keyword"},
+     	{regex: /\/\/.*/, token: "comment"},
+     	{regex: /\/\*/, token: "comment", next: "comment"}
+	],
+	comment: [
+    	{regex: /.*?\*\//, token: "comment", next: "start"},
+    	{regex: /.*/, token: "comment"}
+  	]
+});
+
+function init() {
+	gistText = getUrlParameter("gist");
+	share = getUrlParameter("share");
+	var katydidCodeMirror = CodeMirror(document.getElementById("lefttextarea"), {
+  		mode:  "katydidmode",
+  		value: 'loading...'
+	});
+	var jsonCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
+  		mode:  {name: "javascript", json: true},
+  		value: 'loading...'
+	});
+	if (gistText == undefined) {
+		defaultKatydid = 'WhatsUp == "E"';
+		katydidCodeMirror.setValue(defaultKatydid);
+		jsonDefault = '{\n\
+	"WhatsUp": "E"\n\
+}';
+		jsonCodeMirror.setValue(jsonDefault);
+	} else {
+		loadCode(katydidCodeMirror, jsonCodeMirror);
+		if (!(share == undefined)) {
+			displayShareBox();
+	    }
+	}
+
+	$("#saveButton").click(function(ev) { 
+		saveCode(katydidCodeMirror, jsonCodeMirror);
+	});
+
+	$("#validateButton").click(function(ev) { 
+		ev.preventDefault();
+		validateCode(katydidCodeMirror, jsonCodeMirror);
+	});
+
+}
+
+</script>
+
+</head>
+<body>
+<p></p>
+<div class="row">
+	<div class="col-xs-1"></div>
+	<div class="col-xs-11"><h3>Katydid Playground</h3></div>
+</div>
+<div class="row">
+	<div class="col-xs-1"></div>
+	<div class="col-xs-9">
+		<textarea class="col-xs-12" rows="1" autofocus="true" spellcheck="false" id="thelink" readonly="true" hidden></textarea>
+	</div>
+	<div class="col-xs-2">
+		<a href="#" id="saveButton" class="btn btn-primary" role="button">Share</a>
+	</div>
+</div>
+<p></p>
+<div class="row">
+	<div class="col-xs-1"></div>
+	<div class="col-xs-4" id="lefttextarea"></div>
+	<div class="col-xs-1"></div>
+	<div class="col-xs-4" id="righttextarea"></div>
+	<div class="col-xs-2"></div>
+</div>
+<p></p>
+<div class="row">
+	<div class="col-sm-10 col-xs-8"></div>
+	<div class="col-sm-1 col-xs-3">
+		<a href="#" id="validateButton" class="btn btn-success" role="button">Validate</a>
+	</div>
+	<div class="col-xs-1"></div>
+</div>
+<p></p>
+<div class="row">
+	<div class="col-xs-1"></div>
+	<div class="col-xs-10">
+	<div id="theoutput"></div>
+	</div>
+	<div class="col-xs-1"></div>
+</div>
+</body>
+
+<script type="text/javascript">
+	init();
+</script>
+
+<style type="text/css">
+	 .CodeMirror {
+      line-height: 1.3em;
+      font-family: monospace;
+
+      /* Necessary so the scrollbar can be absolutely positioned within the wrapper on Lion. */
+      position: relative;
+      /* This prevents unwanted scrollbars from showing up on the body and wrapper in IE. */
+      overflow: hidden;
+      background-color: white;
+      width: 100%;
+
+      /* Copied from Bootstrap's textarea */
+      display: inline-block;
+      padding: 4px 6px;
+      margin-bottom: 9px;
+      color: #555555;
+      border: 1px solid #ccc;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+      transition: border linear 0.2s, box-shadow linear 0.2s;  
+    }
+
+    .CodeMirror-focused {
+      /* Copied from Bootstrap's textarea */
+      border-color: rgba(82, 168, 236, 0.8);
+      outline: 0;
+      outline: thin dotted \9;
+      /* IE6-9 */
+
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+         -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);  
+    }
+
+</style>
+
+</html>
