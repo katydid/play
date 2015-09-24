@@ -46,6 +46,10 @@ function getUrlParameter(sParam) {
     }
 }
 
+function validate() {
+	validateCode(katydidCodeMirror, jsonCodeMirror);
+}
+
 function validateCode(katydidCodeMirror, jsonCodeMirror) {
 	$('#theoutput').prop("class", "alert alert-info");
 	$('#theoutput').text("compiling...");
@@ -178,6 +182,14 @@ function init() {
 	$("#validateButton").click(function(ev) { 
 		ev.preventDefault();
 		validateCode(katydidCodeMirror, jsonCodeMirror);
+	});
+
+	katydidCodeMirror.on('keyup', function(instance, event) {
+    	validateCode(katydidCodeMirror, jsonCodeMirror);
+	});
+	
+	jsonCodeMirror.on('keyup', function(instance, event) {
+    	validateCode(katydidCodeMirror, jsonCodeMirror);
 	});
 
 }
