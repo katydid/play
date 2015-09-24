@@ -56,14 +56,19 @@ function validateCode(katydidCodeMirror, jsonCodeMirror) {
 	if (res.indexOf("Error: ") === 0) {
 		res = res.replace("Error: ", "");
 		$('#theoutput').prop("class", "alert alert-danger");
+		$('#theoutput').text(res);
 	} else {
 		if (res == "true") {
 			$('#theoutput').prop("class", "alert alert-success");
-		} else {
+			$('#theoutput').text("valid");
+		} else if (res == "false") {
 			$('#theoutput').prop("class", "alert alert-warning");
+			$('#theoutput').text("invalid");
+		} else {
+			$('#theoutput').prop("class", "alert alert-danger");
+			$('#theoutput').text(res);
 		}
 	}
-	$('#theoutput').text(res);
 }
 
 function reportError(err) {
