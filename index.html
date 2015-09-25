@@ -293,7 +293,7 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">B == []byte{0xfe,'a',255}</div>
-						<div class="col-xs-8">B is an array of bytes which equals {254,97,255}</div>
+						<div class="col-xs-8">B is an array of bytes which equals {254,97,255}. note: json has no bytes type.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">a ^= "abc"</div>
@@ -304,7 +304,7 @@ function init() {
 						<div class="col-xs-8">... ends with xyz</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">a ~= "abc.*xyz"</div>
+						<div class="col-xs-4">a ~= "^abc.*xyz$"</div>
 						<div class="col-xs-8">... matches the regular expression, which means it starts with abc and ends with xyz</div>
 					</div>
 					<div class="row">
@@ -312,11 +312,11 @@ function init() {
 						<div class="col-xs-8">D is a string which contains the substring bc</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">L-&gt;gt(length($[]byte, 0))</div>
+						<div class="col-xs-4">L-&gt;gt(length($[]byte), int(0))</div>
 						<div class="col-xs-8">L is an array of bytes which has a length greater than zero</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">N-&gt;and(ge($int, 10), lt($int, 20))</div>
+						<div class="col-xs-4">N-&gt;and(ge($int, int(10)), lt($int, int(20)))</div>
 						<div class="col-xs-8">N is an int which is greater than or equal to 10 and less than 20</div>
 					</div>
 				</div>
@@ -330,7 +330,7 @@ function init() {
 						<div class="col-xs-8">The structure contains one field named A, which contains anything</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">A: b == c</div>
+						<div class="col-xs-4">A: b == "c"</div>
 						<div class="col-xs-8">The structure contains one field named A, which contains one field named b, which equals c</div>
 					</div>
 					<div class="row">
@@ -370,11 +370,11 @@ function init() {
 						<div class="col-xs-8">any structure that does have just one field named A</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">A:#myref @myref=b==c</div>
+						<div class="col-xs-4">A:#myref @myref=b=="c"</div>
 						<div class="col-xs-8">The structure contains one field named A, which contains one field named b, which equals c.</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">@main=A:(#main|b==c)</div>
+						<div class="col-xs-4">@main=A:(#main|b=="c")</div>
 						<div class="col-xs-8">one field A containing one field A ... where one eventually contains a field b which equals c</div>
 					</div>
 					<div class="row">
