@@ -38,6 +38,27 @@ func Validate(katydidStr, jsonStr string) string {
 }
 
 func validate(katydidStr, jsonStr string) (bool, error) {
+	v := &validator{nil}
+	b, err := v.validate(katydidStr, jsonStr)
+	if err != nil {
+		return false, err
+	}
+	if v.err != nil {
+		return false, err
+	}
+	return b, nil
+}
+
+type validator struct {
+	err error
+}
+
+func (this *validator) validate(katydidStr, jsonStr string) (bool, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			this.err = fmt.Errorf("%v", r)
+		}
+	}()
 	m := make(map[string]interface{})
 	if err := encjson.Unmarshal([]byte(jsonStr), &m); err != nil {
 		return false, err
