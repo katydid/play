@@ -15,6 +15,7 @@
 package main
 
 import (
+	encjson "encoding/json"
 	"fmt"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/katydid/katydid/relapse/interp"
@@ -37,6 +38,10 @@ func Validate(katydidStr, jsonStr string) string {
 }
 
 func validate(katydidStr, jsonStr string) (bool, error) {
+	m := make(map[string]interface{})
+	if err := encjson.Unmarshal([]byte(jsonStr), &m); err != nil {
+		return false, err
+	}
 	g, err := parser.ParseGrammar(katydidStr)
 	if err != nil {
 		return false, err
