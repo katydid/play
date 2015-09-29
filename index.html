@@ -30,6 +30,7 @@ Copyright 2015 Walter Schulze
   <script src="https://cdn.rawgit.com/codemirror/CodeMirror/master/mode/javascript/javascript.js"></script>
   <script src="http://codemirror.net/addon/mode/simple.js"></script>
   <script src="main.js"></script>
+  <script src="example.js"></script>
 
   <script>
 
@@ -162,11 +163,8 @@ function init() {
   		value: 'loading...'
 	});
 	if (gistText == undefined) {
-		defaultKatydid = 'WhatsUp == "E"';
+		defaultKatydid = '.WhatsUp == "E"';
 		katydidCodeMirror.setValue(defaultKatydid);
-		jsonDefault = '{\n\
-	"WhatsUp": "E"\n\
-}';
 		jsonCodeMirror.setValue(jsonDefault);
 	} else {
 		loadCode(katydidCodeMirror, jsonCodeMirror);
@@ -406,7 +404,7 @@ function init() {
   					field types: $double, $int, $uint, $bool, $string, $[]byte
   				</div>
   				<div class="col-xs-4 text-center">
-  					<a href="https://github.com/katydid/katydid/blob/master/list_of_functions.txt">list of other functions</a>
+  					<a href="https://github.com/katydid/katydid/blob/master/list_of_functions.txt">more functions</a>
   				</div>
   				<div class="col-xs-4 text-center">
   					<a href="https://github.com/katydid/katydid/blob/prototype/relapse/all.bnf">grammar specification</a>
