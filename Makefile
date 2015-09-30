@@ -1,2 +1,2 @@
 build:
-	gopherjs build main.go
+	gopherjs build -m main.go

@@ -67,7 +67,7 @@ func (this *validator) validate(katydidStr, jsonStr string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	s := json.NewJsonScanner()
+	s := json.NewJsonParser()
 	err = s.Init([]byte(jsonStr))
 	if err != nil {
 		return false, err
