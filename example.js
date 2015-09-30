@@ -11,31 +11,38 @@ var jsonDefault = JSON.stringify({
 		{
 			"Name": "Dart",
 			"Properties": ["Poison", "Projectile"],
-			"Location": "Tail"
+			"Anatomy": "Abdomen"
 		},
 		{
 			"Name": "Fire Breath",
 			"Properties": ["Fire", "Vapor"],
-			"Location": "Mouth"
+			"Anatomy": "Mouth"
 		}
 	],
 	"DragonsExist": false,
 	"MonkeysSmart": true,
 	"Family": {
-		"Kingdom": "Animalia",
-		"Phylum": "Arthropoda",
 		"Class": "Insecta",
 		"Order": {
 			"Superorder": {
 				"Subclass":	"Pterygota",
-				"Infraclass": "Polyneoptera",
-				"Superorder": "Orthopterida"
+				"Infraclass": "Polyneoptera"
 			},
 			"Order": "Orthoptera"
 		},
 		"Suborder":	"Ensifera",
-		"Infraorder": "Tettigoniidea",
-		"Superfamily": "Tettigonioidea",
 		"Family": "Tettigoniidae"
 	}
-}, "", 2);
+}, "", 4);
+
+var defaultKatydid = `(
+	.WhatsUp == "E" &
+	.Survived >= int(1000000) /*years*/ & 
+	.DragonsExist != true &
+	.FeatureRequests [
+		Name *= "art",
+		*,
+		Anatomy $= "omen"
+	]
+)
+`;

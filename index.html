@@ -140,7 +140,7 @@ function displayShareBox() {
 CodeMirror.defineSimpleMode("katydidmode", {
 	start: [
 		{regex: /"(?:[^\\]|\\.)*?"/, token: "string"},
-		{regex: /(?:\<emptyset\>|\<empty\>)/,
+		{regex: /(?:\<emptyset\>|\<empty\>|true|false)/,
      	token: "keyword"},
      	{regex: /\/\/.*/, token: "comment"},
      	{regex: /\/\*/, token: "comment", next: "comment"}
@@ -156,14 +156,15 @@ function init() {
 	share = getUrlParameter("share");
 	var katydidCodeMirror = CodeMirror(document.getElementById("lefttextarea"), {
   		mode:  "katydidmode",
-  		value: 'loading...'
+  		value: 'loading...',
+  		viewportMargin: Infinity
 	});
 	var jsonCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
   		mode:  {name: "javascript", json: true},
-  		value: 'loading...'
+  		value: 'loading...',
+  		viewportMargin: Infinity
 	});
 	if (gistText == undefined) {
-		defaultKatydid = '.WhatsUp == "E"';
 		katydidCodeMirror.setValue(defaultKatydid);
 		jsonCodeMirror.setValue(jsonDefault);
 	} else {
@@ -424,6 +425,7 @@ function init() {
       overflow: hidden;
       background-color: white;
       width: 100%;
+      height: auto;
 
       /* Copied from Bootstrap's textarea */
       display: inline-block;
