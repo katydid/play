@@ -39,6 +39,7 @@ var defaultKatydid = `(
 	.WhatsUp == "E" &
 	.Survived >= int(1000000) /*years*/ & 
 	.DragonsExist != true &
+	.MonkeysSmart :: $bool &
 	.FeatureRequests [
 		Name *= "art",
 		*,
