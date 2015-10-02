@@ -288,7 +288,8 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">`F g\` &gt; double(0.5)</div>
-						<div class="col-xs-8">F g\ is a floating point number which is greater than a half</div>
+						<div class="col-xs-8">F g\ is a floating point number which is greater than a half.
+						Notice the backslash is included in the string. Back ticks are used for literal multiline unescaped strings.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">B == []byte{0xfe,'a',255}</div>
@@ -342,7 +343,11 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">(A:*|B:*|C:*)</div>
-						<div class="col-xs-8">... one field: A, B or C.</div>
+						<div class="col-xs-8">... one field: A, B or C. The parentheses are required by &amp; and |.</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">(A:*|B:*|(C:*&amp;D:*&amp;E:*))</div>
+						<div class="col-xs-8">Well this is impossible, but this shows that each list of &amp; or | each require their own parentheses.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">_:*</div>

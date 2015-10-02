@@ -42,7 +42,7 @@ var defaultKatydid = `(
 	.FeatureRequests [
 		Name *= "art",
 		*,
-		Anatomy $= "omen"
+		Anatomy $= "omen",
 	]
 )
 `;
