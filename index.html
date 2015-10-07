@@ -151,6 +151,20 @@ CodeMirror.defineSimpleMode("katydidmode", {
   	]
 });
 
+function setHeightAuto() {
+	var codeMirrors = $(".CodeMirror");
+	for (var i = 0; i < codeMirrors.length; i++) {
+    	codeMirrors[i].style.height = "auto";
+	}
+}
+
+function setHeightDefault() {
+	var codeMirrors = $(".CodeMirror");
+	for (var i = 0; i < codeMirrors.length; i++) {
+    	codeMirrors[i].style.height = "";
+	}
+}
+
 function init() {
 	gistText = getUrlParameter("gist");
 	share = getUrlParameter("share");
@@ -164,6 +178,7 @@ function init() {
   		value: 'loading...',
   		viewportMargin: Infinity
 	});
+
 	if (gistText == undefined) {
 		katydidCodeMirror.setValue(defaultKatydid);
 		jsonCodeMirror.setValue(jsonDefault);
@@ -181,6 +196,16 @@ function init() {
 	$("#validateButton").click(function(ev) { 
 		ev.preventDefault();
 		validateCode(katydidCodeMirror, jsonCodeMirror);
+	});
+
+	$("#autosizeButton").click(function(ev) {
+		ev.preventDefault();
+		wasChecked = $("#autosizeButton")[0].className.indexOf(" active") > -1;
+		if (wasChecked) {
+			setHeightDefault();
+		} else {
+			setHeightAuto();
+		}
 	});
 
 	katydidCodeMirror.on('keyup', function(instance, event) {
@@ -240,7 +265,20 @@ function init() {
 		</div>
 	</div>
 	<div class="col-xs-2 text-center">
-		<a href="#" id="validateButton" class="btn btn-success" role="button">Validate</a>
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="#" id="validateButton" class="btn btn-success fixedWithButtons" role="button">Validate</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="btn-group" data-toggle="buttons">
+				<label id="autosizeButton" class="btn btn-primary fixedWithButtons">
+    				<input type="checkbox" autocomplete="off"> Autosize
+  				</label>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="col-xs-5">
 		<div class="row">
@@ -331,7 +369,7 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">A: *</div>
-						<div class="col-xs-8">The structure contains one field named A, which contains anything</div>
+						<div class="col-xs-8">The structure contains one field named A, which contains anything.  Please note that the structure contains exactly one field and not one field within a structure of many fields.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">A: b == "c"</div>
@@ -339,7 +377,7 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">[A:*,B:*]</div>
-						<div class="col-xs-8">... two fields, A followed by B.  Each of these fields can contain anything</div>
+						<div class="col-xs-8">Validates a structure that contains exactly two ordered fields, A followed by B.  Each of these fields can contain anything.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">C [A:*,B:*]</div>
@@ -388,7 +426,7 @@ function init() {
 					<div class="row">
 						<div class="col-xs-4">.A:*</div>
 						<div class="col-xs-8">equivalent to [*,A:*,*]. 
-						A structure which contains a field A.</div>
+						A structure which contains a field A.  There can be many other fields around A.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">.A.b=="c"</div>
@@ -434,7 +472,6 @@ function init() {
       overflow: hidden;
       background-color: white;
       width: 100%;
-      height: auto;
 
       /* Copied from Bootstrap's textarea */
       display: inline-block;
@@ -466,6 +503,10 @@ function init() {
          -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
               box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);  
     }
+
+    .fixedWithButtons {
+    	width: 100px !important;
+	}
 
 </style>
 
