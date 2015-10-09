@@ -369,7 +369,7 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">A: *</div>
-						<div class="col-xs-8">The structure contains one field named A, which contains anything.  Please note that the structure contains exactly one field and not one field within a structure of many fields.</div>
+						<div class="col-xs-8">The structure contains exactly one field. That field is named A. It may have any value.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">A: b == "c"</div>
@@ -385,11 +385,15 @@ function init() {
 					</div>
 					<div class="row">
 						<div class="col-xs-4">(A:*|B:*|C:*)</div>
-						<div class="col-xs-8">... one field: A, B or C. The parentheses are required by &amp; and |.</div>
+						<div class="col-xs-8">... one field: A, B or C. The parentheses are not for arbitrary grouping, but is required for grouping of the same operator, for example | or &amp;.</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">(A:*|B:*|(C:*&amp;D:*&amp;E:*))</div>
-						<div class="col-xs-8">Well this is impossible, but this shows that each list of &amp; or | each require their own parentheses.</div>
+						<div class="col-xs-4">(C:*&amp;D:*)</div>
+						<div class="col-xs-8">Well this is impossible.  You cannot have exactly one field where the field name is equal to C and equal to D</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">((C:*|D:*)&amp;(D:*|E:*|F:*))</div>
+						<div class="col-xs-8">You can have nested expressions.  This will validate a structure with exactly one field named D.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">_:*</div>
