@@ -384,6 +384,18 @@ function init() {
 						<div class="col-xs-8">... one field C which contains two fields, A followed by B ...</div>
 					</div>
 					<div class="row">
+						<div class="col-xs-4">D ["0" == "a", "1" == "b"]</div>
+						<div class="col-xs-8">D contains an array where the zeroth element is a and the element at index one is b</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">E ["0" == "b", *]</div>
+						<div class="col-xs-8">E contains an array which starts with a string b and is followed by zero or more elements</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">F [(_ == "a")*, _ == "b"]</div>
+						<div class="col-xs-8">F contains an array or a structure where the first elements are all have value a and the final element has value b</div>
+					</div>
+					<div class="row">
 						<div class="col-xs-4">(A:*|B:*|C:*)</div>
 						<div class="col-xs-8">... one field: A, B or C. The parentheses are not for arbitrary grouping, but is required for grouping of the same operator, for example | or &amp;.</div>
 					</div>
@@ -420,11 +432,11 @@ function init() {
 						<div class="col-xs-8">any structure that does have just one field named A</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">A:#myref @myref=b=="c"</div>
+						<div class="col-xs-4">A:@myref #myref=b=="c"</div>
 						<div class="col-xs-8">The structure contains one field named A, which contains one field named b, which equals c.</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">@main=A:(#main|b=="c")</div>
+						<div class="col-xs-4">#main=A:(@main|b=="c")</div>
 						<div class="col-xs-8">one field A containing one field A ... where one eventually contains a field b which equals c</div>
 					</div>
 					<div class="row">

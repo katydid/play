@@ -40,7 +40,7 @@ var defaultKatydid = `(
 	.Survived >= int(1000000) /*years*/ & 
 	.DragonsExist != true &
 	.MonkeysSmart :: $bool &
-	.FeatureRequests [
+	.FeatureRequests._ [
 		Name *= "art",
 		*,
 		Anatomy $= "omen",
