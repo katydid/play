@@ -321,7 +321,7 @@ function init() {
 						<div class="col-xs-8">D is a string which contains the substring bc</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">"num" &lt; int(-100)</div>
+						<div class="col-xs-4">"num" &lt; -100</div>
 						<div class="col-xs-8">num is an int which is less than negative 100</div>
 					</div>
 					<div class="row">
@@ -329,7 +329,7 @@ function init() {
 						<div class="col-xs-8">t" is an unsigned int which is greater than or equal to a 100</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">`F g\` &gt; double(0.5)</div>
+						<div class="col-xs-4">`F g\` &gt; 0.5</div>
 						<div class="col-xs-8">F g\ is a floating point number which is greater than a half.
 						Notice the backslash is included in the string. Back ticks are used for literal multiline unescaped strings.</div>
 					</div>
@@ -354,11 +354,11 @@ function init() {
 						<div class="col-xs-8">D is a string which contains the substring bc</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">L-&gt;gt(length($[]byte), int(0))</div>
+						<div class="col-xs-4">L-&gt;gt(length($[]byte), 0)</div>
 						<div class="col-xs-8">L is an array of bytes which has a length greater than zero</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">N-&gt;and(ge($int, int(10)), lt($int, int(20)))</div>
+						<div class="col-xs-4">N-&gt;and(ge($int, 10), lt($int, 20))</div>
 						<div class="col-xs-8">N is an int which is greater than or equal to 10 and less than 20</div>
 					</div>
 				</div>
