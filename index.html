@@ -65,10 +65,10 @@ function validateCode(katydidCodeMirror, jsonCodeMirror) {
 	} else {
 		if (res == "true") {
 			$('#theoutput').prop("class", "alert alert-success");
-			$('#theoutput').text("valid");
+			$('#theoutput').text("The Json input on the right satisfies the validation expression on the left.");
 		} else if (res == "false") {
 			$('#theoutput').prop("class", "alert alert-warning");
-			$('#theoutput').text("invalid");
+			$('#theoutput').text("The Json input on the right does not satisfy the validation expression on the left.");
 		} else {
 			$('#theoutput').prop("class", "alert alert-danger");
 			$('#theoutput').text(res);
