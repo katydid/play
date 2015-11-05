@@ -47,17 +47,13 @@ function getUrlParameter(sParam) {
     }
 }
 
-function validate() {
-	validateCode(katydidCodeMirror, jsonCodeMirror);
-}
-
-function validateCode(katydidCodeMirror, jsonCodeMirror) {
+function validateCode(mode, codeMirrors) {
 	$('#theoutput').prop("class", "alert alert-info");
 	$('#theoutput').text("compiling...");
-	var katydidcode = katydidCodeMirror.getValue();
-	var jsoncode = jsonCodeMirror.getValue();
+	var katydidcode = codeMirrors["katydid"].getValue();
+	var inputcode = codeMirrors[mode].getValue();
 	var validateFunc = gofunctions["Validate"];
-	var res = validateFunc(katydidcode, jsoncode);
+	var res = validateFunc(mode, katydidcode, inputcode);
 	if (res.indexOf("Error: ") === 0) {
 		res = res.replace("Error: ", "");
 		$('#theoutput').prop("class", "alert alert-danger");
@@ -65,10 +61,10 @@ function validateCode(katydidCodeMirror, jsonCodeMirror) {
 	} else {
 		if (res == "true") {
 			$('#theoutput').prop("class", "alert alert-success");
-			$('#theoutput').text("The Json input on the right satisfies the validation expression on the left.");
+			$('#theoutput').text("The input on the right satisfies the validation expression on the left.");
 		} else if (res == "false") {
 			$('#theoutput').prop("class", "alert alert-warning");
-			$('#theoutput').text("The Json input on the right does not satisfy the validation expression on the left.");
+			$('#theoutput').text("The input on the right does not satisfy the validation expression on the left.");
 		} else {
 			$('#theoutput').prop("class", "alert alert-danger");
 			$('#theoutput').text(res);
@@ -81,7 +77,7 @@ function reportError(err) {
 	$('#theoutput').text(err);
 }
 
-function saveCode(codeMirrors) {
+function saveCode(mode, codeMirrors) {
 	var saving = {
         "description": "saved katydid src",
         "public": true,
@@ -95,7 +91,7 @@ function saveCode(codeMirrors) {
 	var gist = github.getGist();
 	gist.create(saving, function(err, rest) {
     	if (err == undefined) {
-    		window.location.assign("./index.html?gist="+rest.id+"&share=true");
+    		window.location.assign("./index.html?gist="+rest.id+"&share=true&mode="+mode);
     	} else {
     		reportError(err);
     	}
@@ -162,13 +158,13 @@ function setHeightDefault() {
 	}
 }
 
-function setDefaults(codeMirrors) {
-	for (var key in codeMirrors) {
-		codeMirrors[key].setValue(defaults[key]);
-	}
+function setDefaults(mode, codeMirrors) {
+	codeMirrors["katydid"].setValue(defaults[mode]["katydid"]);
+	codeMirrors[mode].setValue(defaults[mode]["input"]);
 }
 
 function init() {
+	var mode = getUrlParameter("mode");
 	gistText = getUrlParameter("gist");
 	share = getUrlParameter("share");
 	var katydidCodeMirror = CodeMirror(document.getElementById("lefttextarea"), {
@@ -176,16 +172,31 @@ function init() {
   		value: 'loading...',
   		viewportMargin: Infinity
 	});
-	var jsonCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
-  		mode:  {name: "javascript", json: true},
-  		value: 'loading...',
-  		viewportMargin: Infinity
-	});
-
-	var codeMirrors = {"katydid": katydidCodeMirror, "json": jsonCodeMirror};
+	var codeMirrors = {"katydid": katydidCodeMirror};
+	if (mode == undefined) {
+		var mode = "json";
+	}
+	if (mode == "json") {
+		var inputCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
+	  		mode:  {name: "javascript", json: true},
+	  		value: 'loading...',
+	  		viewportMargin: Infinity
+		});
+		codeMirrors[mode] = inputCodeMirror;
+	} else {
+		if (mode == "xml") {
+			var inputCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
+		  		mode:  {name: "xml"},
+		  		value: 'loading...',
+		  		viewportMargin: Infinity
+			});
+			codeMirrors[mode] = inputCodeMirror;
+		}
+	}
+	$("#inputheading").text(mode + " input");
 
 	if (gistText == undefined) {
-		setDefaults(codeMirrors);
+		setDefaults(mode, codeMirrors);
 	} else {
 		loadCode(codeMirrors);
 		if (!(share == undefined)) {
@@ -194,12 +205,12 @@ function init() {
 	}
 
 	$("#saveButton").click(function(ev) { 
-		saveCode(codeMirrors);
+		saveCode(mode, codeMirrors);
 	});
 
 	$("#validateButton").click(function(ev) { 
 		ev.preventDefault();
-		validateCode(katydidCodeMirror, jsonCodeMirror);
+		validateCode(mode, codeMirrors);
 	});
 
 	$("#autosizeButton").click(function(ev) {
@@ -212,13 +223,11 @@ function init() {
 		}
 	});
 
-	katydidCodeMirror.on('keyup', function(instance, event) {
-    	validateCode(katydidCodeMirror, jsonCodeMirror);
-	});
-	
-	jsonCodeMirror.on('keyup', function(instance, event) {
-    	validateCode(katydidCodeMirror, jsonCodeMirror);
-	});
+	for (var key in codeMirrors) {
+		codeMirrors[key].on('keyup', function(instance, event) {
+    		validateCode(mode, codeMirrors);
+		});		
+	}
 
 }
 
@@ -245,7 +254,7 @@ function init() {
 		<div class="row">
 			<div class="col-xs-2"></div>
 			<div class="col-xs-10">
-				<h3>Validator</h3>	
+				<h3>validator</h3>	
 			</div>
 		</div>
 	</div>
@@ -253,7 +262,7 @@ function init() {
 	<div class="col-xs-5">
 		<div class="row">
 			<div class="col-xs-10">
-				<h3>Json Input</h3>	
+				<h3 id="inputheading">input</h3>	
 			</div>
 			<div class="col-xs-2"></div>
 		</div>

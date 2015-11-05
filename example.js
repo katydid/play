@@ -52,4 +52,17 @@ var defaultKatydid = `(
 )
 `;
 
-var defaults = {"katydid": defaultKatydid, "json": jsonDefault};
+var defaultKatydidXML = 'WhatsUp == "E"';
+
+var xmlDefault = "<WhatsUp>E</WhatsUp>";
+
+var defaults = {
+	"json": { 
+		"katydid": defaultKatydid, 
+		"input": jsonDefault
+	},
+	"xml": {
+		"katydid": defaultKatydidXML,
+		"input": xmlDefault
+	}
+}
