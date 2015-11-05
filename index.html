@@ -81,23 +81,19 @@ function reportError(err) {
 	$('#theoutput').text(err);
 }
 
-function saveCode(katydidCodeMirror, jsonCodeMirror) {
-	var katydidcode = katydidCodeMirror.getValue();
-	var jsoncode = jsonCodeMirror.getValue();
-	var github = new Github({});
-	var gist = github.getGist();
-	gist.create({
+function saveCode(codeMirrors) {
+	var saving = {
         "description": "saved katydid src",
         "public": true,
-        "files": {
-            "katydidsrc": {
-            	"content": katydidcode,
-            },
-            "jsonsrc": {
-            	"content": jsoncode,
-            }
-        }
-    }, function(err, rest) {
+        "files": {}
+    }
+    for (key in codeMirrors) {
+    	saving["files"][key+"src"] = {}
+    	saving["files"][key+"src"]["content"] = codeMirrors[key].getValue();
+    }
+	var github = new Github({});
+	var gist = github.getGist();
+	gist.create(saving, function(err, rest) {
     	if (err == undefined) {
     		window.location.assign("./index.html?gist="+rest.id+"&share=true");
     	} else {
@@ -106,13 +102,14 @@ function saveCode(katydidCodeMirror, jsonCodeMirror) {
     });
 }
 
-function loadCode(katydidCodeMirror, jsonCodeMirror) {
+function loadCode(codeMirrors) {
 	var github = new Github({});
 	var gist = github.getGist(gistText);
 	gist.read(function(err, content) {
 		if (err == undefined) {
-			katydidCodeMirror.setValue(content.files["katydidsrc"].content);
-			jsonCodeMirror.setValue(content.files["jsonsrc"].content);
+			for (key in codeMirrors) {
+				codeMirrors[key].setValue(content.files[key+"src"].content);
+			}
 		} else {
 			reportError(err);
 		}
@@ -165,6 +162,12 @@ function setHeightDefault() {
 	}
 }
 
+function setDefaults(codeMirrors) {
+	for (var key in codeMirrors) {
+		codeMirrors[key].setValue(defaults[key]);
+	}
+}
+
 function init() {
 	gistText = getUrlParameter("gist");
 	share = getUrlParameter("share");
@@ -179,18 +182,19 @@ function init() {
   		viewportMargin: Infinity
 	});
 
+	var codeMirrors = {"katydid": katydidCodeMirror, "json": jsonCodeMirror};
+
 	if (gistText == undefined) {
-		katydidCodeMirror.setValue(defaultKatydid);
-		jsonCodeMirror.setValue(jsonDefault);
+		setDefaults(codeMirrors);
 	} else {
-		loadCode(katydidCodeMirror, jsonCodeMirror);
+		loadCode(codeMirrors);
 		if (!(share == undefined)) {
 			displayShareBox();
 	    }
 	}
 
 	$("#saveButton").click(function(ev) { 
-		saveCode(katydidCodeMirror, jsonCodeMirror);
+		saveCode(codeMirrors);
 	});
 
 	$("#validateButton").click(function(ev) { 

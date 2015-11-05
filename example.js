@@ -51,3 +51,5 @@ var defaultKatydid = `(
 	]
 )
 `;
+
+var defaults = {"katydid": defaultKatydid, "json": jsonDefault};
