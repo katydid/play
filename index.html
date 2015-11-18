@@ -335,13 +335,22 @@ function init() {
 						<div class="col-xs-8">num is an int which is less than negative 100</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">"t\"" &gt;= uint(100)</div>
-						<div class="col-xs-8">t" is an unsigned int which is greater than or equal to a 100</div>
+						<div class="col-xs-4">u &gt;= uint(100)</div>
+						<div class="col-xs-8">u is an unsigned int which is greater than or equal to a 100</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-4">`F g\` &gt; 0.5</div>
-						<div class="col-xs-8">F g\ is a floating point number which is greater than a half.
-						Notice the backslash is included in the string. Back ticks are used for literal multiline unescaped strings.</div>
+						<div class="col-xs-4">F &gt; 0.5</div>
+						<div class="col-xs-8">F is a floating point number which is greater than a half.</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">"F g\\" :: $bool</div>
+						<div class="col-xs-8">F g\ is a boolean.
+						Notice the escaped backslash. Quotes are useful for spaces and other escapable characters.</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">`F g\` :: $bool</div>
+						<div class="col-xs-8">F g\ is a boolean.
+						Notice the backslash is included in the string. Backticks are useful for literal and even multiline unescaped strings.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">B == []byte{0xfe,'a',255}</div>
