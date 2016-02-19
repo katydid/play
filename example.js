@@ -44,11 +44,11 @@ var defaultKatydid = `(
 		*,
 		_ == "Katydids Alive"
 	] &
-	.FeatureRequests._ [
-		Name *= "art",
-		*,
-		Anatomy $= "omen",
-	]
+	.FeatureRequests._ {
+		Name *= "art";
+		*;
+		Anatomy $= "omen";
+	}
 )
 `;
 

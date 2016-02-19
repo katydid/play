@@ -19,77 +19,73 @@ import (
 	encxml "encoding/xml"
 	"fmt"
 	"github.com/gopherjs/gopherjs/js"
-	"github.com/katydid/katydid/relapse/interp"
+	"github.com/katydid/katydid/relapse/ast"
+	"github.com/katydid/katydid/relapse/mem"
 	"github.com/katydid/katydid/relapse/parser"
+	"github.com/katydid/katydid/serialize"
 	"github.com/katydid/katydid/serialize/json"
 	"github.com/katydid/katydid/serialize/xml"
 )
 
 func main() {
 	js.Global.Set("gofunctions", map[string]interface{}{
-		"Validate": Validate,
+		"RelapsePlayground": RelapsePlayground,
 	})
 }
 
-func Validate(mode string, katydidStr, input string) string {
-	v, err := validate(mode, katydidStr, input)
+func RelapsePlayground(mode string, katydidStr, input string) string {
+	v, err := relapsePlayground(mode, katydidStr, input)
 	if err != nil {
 		return "Error: " + err.Error()
 	}
 	return fmt.Sprintf("%v", v)
 }
 
-func validate(mode, katydidStr, inputStr string) (bool, error) {
-	v := &validator{nil}
-	b, err := v.validate(mode, katydidStr, inputStr)
-	if err != nil {
-		return false, err
-	}
-	if v.err != nil {
-		return false, err
-	}
-	return b, nil
-}
-
-type validator struct {
-	err error
-}
-
-func (this *validator) validate(mode, katydidStr, inputStr string) (bool, error) {
-	defer func() {
-		if r := recover(); r != nil {
-			this.err = fmt.Errorf("%v", r)
-		}
-	}()
-	g, err := parser.ParseGrammar(katydidStr)
-	if err != nil {
-		return false, err
-	}
+func newParser(mode string, inputStr string) (serialize.Parser, error) {
 	switch mode {
 	case "json":
 		m := make(map[string]interface{})
 		if err := encjson.Unmarshal([]byte(inputStr), &m); err != nil {
-			return false, err
+			return nil, err
 		}
-		s := json.NewJsonParser()
-		err = s.Init([]byte(inputStr))
+		p := json.NewJsonParser()
+		err := p.Init([]byte(inputStr))
 		if err != nil {
-			return false, err
+			return nil, err
 		}
-		match := interp.Interpret(g, s)
-		return match, nil
+		return p, nil
 	case "xml":
 		var m interface{}
 		if err := encxml.Unmarshal([]byte(inputStr), &m); err != nil {
-			return false, err
+			return nil, err
 		}
-		s := xml.NewXMLParser()
-		err = s.Init([]byte(inputStr))
+		p := xml.NewXMLParser()
+		err := p.Init([]byte(inputStr))
 		if err != nil {
-			return false, err
+			return nil, err
 		}
-		match := interp.Interpret(g, s)
-		return match, nil
+		return p, nil
 	}
-	return false, fmt.Errorf("unknown mode %s", mode)
+	return nil, fmt.Errorf("unknown mode %s", mode)
+}
+
+func relapsePlayground(mode, katydidStr, inputStr string) (match bool, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("%v", r)
+		}
+	}()
+	var g *relapse.Grammar
+	g, err = parser.ParseGrammar(katydidStr)
+	if err != nil {
+		return
+	}
+	var p serialize.Parser
+	p, err = newParser(mode, inputStr)
+	if err != nil {
+		return
+	}
+	mem := mem.New(g)
+	match = mem.Interpret(p)
+	return
 }
