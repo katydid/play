@@ -55,7 +55,7 @@ function saveCode(mode, codeMirrors) {
 	var gist = github.getGist();
 	gist.create(saving, function(err, rest) {
     	if (err == undefined) {
-    		window.location.assign("./index.html?gist="+rest.id+"&share=true&mode="+mode);
+    		window.location.assign(window.location.pathname+"?gist="+rest.id+"&share=true&mode="+mode);
     	} else {
     		reportError(err);
     	}
