@@ -18,13 +18,14 @@ import (
 	encjson "encoding/json"
 	encxml "encoding/xml"
 	"fmt"
+
 	"github.com/gopherjs/gopherjs/js"
+	"github.com/katydid/katydid/parser"
+	"github.com/katydid/katydid/parser/json"
+	"github.com/katydid/katydid/parser/xml"
 	"github.com/katydid/katydid/relapse/ast"
 	"github.com/katydid/katydid/relapse/mem"
-	"github.com/katydid/katydid/relapse/parser"
-	"github.com/katydid/katydid/serialize"
-	"github.com/katydid/katydid/serialize/json"
-	"github.com/katydid/katydid/serialize/xml"
+	relapseparser "github.com/katydid/katydid/relapse/parser"
 )
 
 func main() {
@@ -41,7 +42,7 @@ func RelapsePlayground(mode string, katydidStr, input string) string {
 	return fmt.Sprintf("%v", v)
 }
 
-func newParser(mode string, inputStr string) (serialize.Parser, error) {
+func newParser(mode string, inputStr string) (parser.Interface, error) {
 	switch mode {
 	case "json":
 		m := make(map[string]interface{})
@@ -75,17 +76,21 @@ func relapsePlayground(mode, katydidStr, inputStr string) (match bool, err error
 			err = fmt.Errorf("%v", r)
 		}
 	}()
-	var g *relapse.Grammar
-	g, err = parser.ParseGrammar(katydidStr)
+	var g *ast.Grammar
+	g, err = relapseparser.ParseGrammar(katydidStr)
 	if err != nil {
 		return
 	}
-	var p serialize.Parser
+	var p parser.Interface
 	p, err = newParser(mode, inputStr)
 	if err != nil {
 		return
 	}
-	mem := mem.New(g)
-	match = mem.Interpret(p)
+	var m *mem.Mem
+	m, err = mem.New(g)
+	if err != nil {
+		return
+	}
+	match, err = m.Validate(p)
 	return
 }
