@@ -1,4 +1,4 @@
-<!--  
+<!--
 
 Copyright 2015 Walter Schulze
 
@@ -12,7 +12,7 @@ Copyright 2015 Walter Schulze
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
- limitations under the License. 
+ limitations under the License.
 
 -->
 
@@ -26,9 +26,9 @@ Copyright 2015 Walter Schulze
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="github.js"></script>
 
-  <script src="./vendor/CodeMirror-5.19.0/lib/codemirror.js"></script>
-  <link rel="stylesheet" href="./vendor/CodeMirror-5.19.0/lib/codemirror.css"/>
-  <script src="./vendor/CodeMirror-5.19.0/mode/javascript/javascript.js"></script>
+  <script src="./vendor/codemirror-5.61.1/lib/codemirror.js"></script>
+  <link rel="stylesheet" href="./vendor/codemirror-5.61.1/lib/codemirror.css"/>
+  <script src="./vendor/codemirror-5.61.1/mode/javascript/javascript.js"></script>
   <script src="./vendor/codemirror.net/addon/mode/simple.js"></script>
   <script src="main.js"></script>
   <script src="example.js"></script>
@@ -66,14 +66,14 @@ Copyright 2015 Walter Schulze
 		<div class="row">
 			<div class="col-xs-2"></div>
 			<div class="col-xs-10">
-				<h3>validator</h3>	
+				<h3>validator</h3>
 			</div>
 		</div>
 	</div>
 	<div class="col-xs-6">
 		<div class="row">
 			<div class="col-xs-10">
-				<h3 id="inputheading">input</h3>	
+				<h3 id="inputheading">input</h3>
 			</div>
 			<div class="col-xs-2"></div>
 		</div>
@@ -266,17 +266,17 @@ Copyright 2015 Walter Schulze
 					</div>
 					<div class="row">
 						<div class="col-xs-4">.A:*</div>
-						<div class="col-xs-8">equivalent to [*, A:*, *]. 
+						<div class="col-xs-8">equivalent to [*, A:*, *].
 						A structure which contains a field A.  There can be many other fields around A.</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">.A.b == "c"</div>
-						<div class="col-xs-8">equivalent to [*, A:[*, b==c, *], *].  
+						<div class="col-xs-8">equivalent to [*, A:[*, b==c, *], *].
 						A structure which contains a field A, which contains a field b which is equal to c</div>
 					</div>
 					<div class="row">
 						<div class="col-xs-4">.B._ == "c"</div>
-						<div class="col-xs-8">equivalent to [*, B:[*, _==c, *], *].  
+						<div class="col-xs-8">equivalent to [*, B:[*, _==c, *], *].
 						A structure which contains a field B, which contains a field or an array value which is equal to c</div>
 					</div>
 				</div>
@@ -301,7 +301,7 @@ Copyright 2015 Walter Schulze
 </div>
 <div class="row">
 	<div class="col-xs-1"></div>
-	<div class="col-xs-10 text-right">Powered By: 
+	<div class="col-xs-10 text-right">Powered By:
 		<a href="https://github.com/gopherjs/gopherjs"><img src="https://avatars0.githubusercontent.com/u/6654647?v=3&s=200" height="40" alt="gopherjs"></img></a>
 		<a href="https://github.com"><img src="https://assets-cdn.github.com/images/modules/logos_page/Octocat.png" height="40" alt="github"></img></a>
 		<a href="https://codemirror.net/"><img src="https://codemirror.net/doc/logo.png" height="40" alt="codemirror"></img></a>
