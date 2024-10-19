@@ -23,19 +23,19 @@ import (
 	"github.com/katydid/katydid/parser"
 	"github.com/katydid/katydid/parser/json"
 	"github.com/katydid/katydid/parser/xml"
-	"github.com/katydid/katydid/relapse/ast"
-	"github.com/katydid/katydid/relapse/mem"
-	relapseparser "github.com/katydid/katydid/relapse/parser"
+	"github.com/katydid/validator-go/validator/ast"
+	"github.com/katydid/validator-go/validator/mem"
+	validatorparser "github.com/katydid/validator-go/parser"
 )
 
 func main() {
 	js.Global.Set("gofunctions", map[string]interface{}{
-		"RelapsePlayground": RelapsePlayground,
+		"ValidatorPlayground": ValidatorPlayground,
 	})
 }
 
-func RelapsePlayground(mode string, katydidStr, input string) string {
-	v, err := relapsePlayground(mode, katydidStr, input)
+func ValidatorPlayground(mode string, katydidStr, input string) string {
+	v, err := validatorPlayground(mode, katydidStr, input)
 	if err != nil {
 		return "Error: " + err.Error()
 	}
@@ -70,14 +70,14 @@ func newParser(mode string, inputStr string) (parser.Interface, error) {
 	return nil, fmt.Errorf("unknown mode %s", mode)
 }
 
-func relapsePlayground(mode, katydidStr, inputStr string) (match bool, err error) {
+func validatorPlayground(mode, katydidStr, inputStr string) (match bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("%v", r)
 		}
 	}()
 	var g *ast.Grammar
-	g, err = relapseparser.ParseGrammar(katydidStr)
+	g, err = validatorparser.ParseGrammar(katydidStr)
 	if err != nil {
 		return
 	}
