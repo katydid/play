@@ -77,7 +77,7 @@ func TestValidate(t *testing.T) {
         "Family": "Tettigoniidae"
     }
 }`
-	valid, err := relapsePlayground("json", katydidStr, jsonStr)
+	valid, err := validatorPlayground("json", katydidStr, jsonStr)
 	if err != nil {
 		t.Fatal(err)
 	}
