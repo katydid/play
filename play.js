@@ -16,7 +16,7 @@ function validateCode(mode, codeMirrors) {
 	$('#theoutput').text("compiling...");
 	var katydidcode = codeMirrors["katydid"].getValue();
 	var inputcode = codeMirrors[mode].getValue();
-	var validateFunc = gofunctions["RelapsePlayground"];
+	var validateFunc = gofunctions["ValidatorPlayground"];
 	var res = validateFunc(mode, katydidcode, inputcode);
 	if (res.indexOf("Error: ") === 0) {
 		res = res.replace("Error: ", "");
