@@ -1,14 +1,12 @@
 function getUrlParameter(sParam) {
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) 
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam) 
-        {
-            return sParameterName[1];
-        }
-    }
+	var sPageURL = window.location.search.substring(1);
+	var sURLVariables = sPageURL.split('&');
+	for (var i = 0; i < sURLVariables.length; i++) {
+		var sParameterName = sURLVariables[i].split('=');
+		if (sParameterName[0] == sParam) {
+			return sParameterName[1];
+		}
+	}
 }
 
 function validateCode(mode, codeMirrors) {
@@ -16,7 +14,7 @@ function validateCode(mode, codeMirrors) {
 	$('#theoutput').text("compiling...");
 	var katydidcode = codeMirrors["katydid"].getValue();
 	var inputcode = codeMirrors[mode].getValue();
-	var validateFunc = gofunctions["ValidatorPlayground"];
+	var validateFunc = gofunctions["RelapsePlayground"];
 	var res = validateFunc(mode, katydidcode, inputcode);
 	if (res.indexOf("Error: ") === 0) {
 		res = res.replace("Error: ", "");
@@ -43,32 +41,32 @@ function reportError(err) {
 
 function saveCode(mode, codeMirrors) {
 	var saving = {
-        "description": "saved katydid src",
-        "public": true,
-        "files": {}
-    }
-    for (key in codeMirrors) {
-    	saving["files"][key+"src"] = {}
-    	saving["files"][key+"src"]["content"] = codeMirrors[key].getValue();
-    }
+		"description": "saved katydid src",
+		"public": true,
+		"files": {}
+	}
+	for (key in codeMirrors) {
+		saving["files"][key + "src"] = {}
+		saving["files"][key + "src"]["content"] = codeMirrors[key].getValue();
+	}
 	var github = new Github({});
 	var gist = github.getGist();
-	gist.create(saving, function(err, rest) {
-    	if (err == undefined) {
-    		window.location.assign(window.location.pathname+"?gist="+rest.id+"&share=true&mode="+mode);
-    	} else {
-    		reportError(err);
-    	}
-    });
+	gist.create(saving, function (err, rest) {
+		if (err == undefined) {
+			window.location.assign(window.location.pathname + "?gist=" + rest.id + "&share=true&mode=" + mode);
+		} else {
+			reportError(err);
+		}
+	});
 }
 
 function loadCode(codeMirrors) {
 	var github = new Github({});
 	var gist = github.getGist(gistText);
-	gist.read(function(err, content) {
+	gist.read(function (err, content) {
 		if (err == undefined) {
 			for (key in codeMirrors) {
-				codeMirrors[key].setValue(content.files[key+"src"].content);
+				codeMirrors[key].setValue(content.files[key + "src"].content);
 			}
 		} else {
 			reportError(err);
@@ -81,44 +79,46 @@ function displayShareBox() {
 	$("#thelink").val(linkText);
 	$("#thelink").prop("type", "text");
 	var theLinkBox = document.getElementById("thelink");
-    theLinkBox.onfocus = function() {
-        theLinkBox.select();
+	theLinkBox.onfocus = function () {
+		theLinkBox.select();
 
-        // Work around Chrome's little problem
-        theLinkBox.onmouseup = function() {
-            // Prevent further mouseup intervention
-            theLinkBox.onmouseup = null;
-            return false;
-        };
-    };
-    theLinkBox.focus();
+		// Work around Chrome's little problem
+		theLinkBox.onmouseup = function () {
+			// Prevent further mouseup intervention
+			theLinkBox.onmouseup = null;
+			return false;
+		};
+	};
+	theLinkBox.focus();
 }
 
 CodeMirror.defineSimpleMode("katydidmode", {
 	start: [
-		{regex: /"(?:[^\\]|\\.)*?"/, token: "string"},
-		{regex: /(?:\<emptyset\>|\<empty\>|true|false)/,
-     	token: "keyword"},
-     	{regex: /\/\/.*/, token: "comment"},
-     	{regex: /\/\*/, token: "comment", next: "comment"}
+		{ regex: /"(?:[^\\]|\\.)*?"/, token: "string" },
+		{
+			regex: /(?:\<emptyset\>|\<empty\>|true|false)/,
+			token: "keyword"
+		},
+		{ regex: /\/\/.*/, token: "comment" },
+		{ regex: /\/\*/, token: "comment", next: "comment" }
 	],
 	comment: [
-    	{regex: /.*?\*\//, token: "comment", next: "start"},
-    	{regex: /.*/, token: "comment"}
-  	]
+		{ regex: /.*?\*\//, token: "comment", next: "start" },
+		{ regex: /.*/, token: "comment" }
+	]
 });
 
 function setHeightAuto() {
 	var codeMirrors = $(".CodeMirror");
 	for (var i = 0; i < codeMirrors.length; i++) {
-    	codeMirrors[i].style.height = "auto";
+		codeMirrors[i].style.height = "auto";
 	}
 }
 
 function setHeightDefault() {
 	var codeMirrors = $(".CodeMirror");
 	for (var i = 0; i < codeMirrors.length; i++) {
-    	codeMirrors[i].style.height = "25em";
+		codeMirrors[i].style.height = "25em";
 	}
 }
 
@@ -132,27 +132,27 @@ function init() {
 	gistText = getUrlParameter("gist");
 	share = getUrlParameter("share");
 	var katydidCodeMirror = CodeMirror(document.getElementById("lefttextarea"), {
-  		mode:  "katydidmode",
-  		value: 'loading...',
-  		viewportMargin: Infinity
+		mode: "katydidmode",
+		value: 'loading...',
+		viewportMargin: Infinity
 	});
-	var codeMirrors = {"katydid": katydidCodeMirror};
+	var codeMirrors = { "katydid": katydidCodeMirror };
 	if (mode == undefined) {
 		var mode = "json";
 	}
 	if (mode == "json") {
 		var inputCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
-	  		mode:  {name: "javascript", json: true},
-	  		value: 'loading...',
-	  		viewportMargin: Infinity
+			mode: { name: "javascript", json: true },
+			value: 'loading...',
+			viewportMargin: Infinity
 		});
 		codeMirrors[mode] = inputCodeMirror;
 	} else {
 		if (mode == "xml") {
 			var inputCodeMirror = CodeMirror(document.getElementById("righttextarea"), {
-		  		mode:  "xml",
-		  		value: 'loading...',
-		  		viewportMargin: Infinity
+				mode: "xml",
+				value: 'loading...',
+				viewportMargin: Infinity
 			});
 			codeMirrors[mode] = inputCodeMirror;
 		}
@@ -166,20 +166,20 @@ function init() {
 		loadCode(codeMirrors);
 		if (!(share == undefined)) {
 			displayShareBox();
-	    }
+		}
 	}
 
-	$("#saveButton").click(function(ev) { 
+	$("#saveButton").click(function (ev) {
 		saveCode(mode, codeMirrors);
 	});
 
-	$("#validateButton").click(function(ev) { 
+	$("#validateButton").click(function (ev) {
 		ev.preventDefault();
 		validateCode(mode, codeMirrors);
 	});
 
 	setHeightDefault();
-	$("#autosizeButton").click(function(ev) {
+	$("#autosizeButton").click(function (ev) {
 		ev.preventDefault();
 		wasChecked = $("#autosizeButton").hasClass("active");
 		if (wasChecked) {
@@ -192,9 +192,9 @@ function init() {
 	});
 
 	for (var key in codeMirrors) {
-		codeMirrors[key].on('keyup', function(instance, event) {
-    		validateCode(mode, codeMirrors);
-		});		
+		codeMirrors[key].on('keyup', function (instance, event) {
+			validateCode(mode, codeMirrors);
+		});
 	}
 
 }

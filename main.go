@@ -25,12 +25,12 @@ import (
 	"github.com/katydid/katydid/parser/xml"
 	"github.com/katydid/validator-go/validator/ast"
 	"github.com/katydid/validator-go/validator/mem"
-	validatorparser "github.com/katydid/validator-go/parser"
+	validatorparser "github.com/katydid/validator-go/validator/parser"
 )
 
 func main() {
 	js.Global.Set("gofunctions", map[string]interface{}{
-		"ValidatorPlayground": ValidatorPlayground,
+		"RelapsePlayground": ValidatorPlayground,
 	})
 }
 
